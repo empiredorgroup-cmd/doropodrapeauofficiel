@@ -1,0 +1,26 @@
+export type Member={id:string;name:string;role:string;bio:string;photo:string};
+export const members:Member[]=[
+['KAMBIRE SIE','Président Fondateur','Fondateur et figure de référence de l’association.','Fondateur'],
+['LANTA LEZO ANNE','1re Vice-Présidente','Membre de la direction associative et du bureau.','Lanta'],
+['KAMBIRE DISSOURTE','2e Vice-Président','Participe à la direction du bureau et à la mise en œuvre des orientations de l’Assemblée Générale.','Dissourté'],
+['KAMBOU TOHO PHILIPPE','Secrétaire Général','Assure les correspondances, convocations, procès-verbaux et dossiers administratifs.','philippe'],
+['SIB SAMI','Secrétaire Général Adjoint','Seconde le Secrétaire Général et le supplée en cas d’empêchement.','sami'],
+['KAMBOU SIE FRANCK','Trésorier Général','Participe au suivi des cotisations, recettes, dépenses et documents comptables.','franck'],
+['DIBLONI ROCK ELVIS','Trésorier Général Adjoint','Assiste le Trésorier Général et le supplée en cas d’empêchement.','elvis'],
+['PALE DOMINIQUE','Commissaire aux comptes','Participe au contrôle de la gestion financière du Bureau Exécutif.','dominique'],
+['KAMBIRE ABOUDRAMANE','Commissaire aux comptes adjoint','Participe au dispositif de contrôle des comptes et à la surveillance de la gestion financière.','aboudramane'],
+['KAMBOU KPEKPE ERIC','Chargé de Communication','Contribue à la communication de l’association et à la diffusion de ses activités.','Éric'],
+['SIB OLLO JEAN LUC','Chargé de Communication','Participe aux actions de communication et à la valorisation des initiatives.','luc'],
+['NOUFE INI JULIENNE','Chargée de Communication','Participe aux activités de communication et à la circulation des informations associatives.','julienne'],
+['SORO ERNEST','Comité chargé des Activités et de la Logistique','Participe à l’organisation matérielle et logistique des activités.','Soro'],
+['DJANE ESTHER','Comité chargé des Activités et de la Logistique','Contribue à la préparation et au suivi logistique des manifestations.','esther'],
+['NOUFE NESTOR','Comité chargé à l’Organisation','Participe à la préparation, à la coordination et au déroulement des activités.','nestor'],
+['HIEN MATHIEU','Comité chargé à l’Organisation','Contribue à la coordination opérationnelle des activités associatives.','mathieu'],
+['NOUFE OLO MARCELIN','Comité chargé aux Affaires Extérieures et aux Partenariats','Participe aux relations extérieures et au développement des partenariats.','marcelin'],
+['TRAORE AWA','Comité chargé aux Affaires Extérieures et aux Partenariats','Contribue aux relations avec les partenaires et interlocuteurs extérieurs.','Awa traore'],
+['COULIBALY IBRAHIM','Comité chargé à la Mobilisation','Participe à la mobilisation des membres et du public autour des activités.','ibrahim'],
+['KAMBOU DAVID','Comité chargé à la Mobilisation','Contribue à la mobilisation et à la participation effective aux activités.','david'],
+['KAMBOU LAZARE','Comité chargé à la Mobilisation','Participe aux actions de mobilisation et de sensibilisation des membres.','lazare'],
+['SIB OLLO ARNAUD','Consultant des Projets','Apporte son concours à la réflexion et à l’accompagnement des projets.','arnaud'],
+['DAH HOHO SABINE','Membre artistique','Participe à la dimension artistique et culturelle des activités.','sabine']
+].map(([name,role,bio,photo],i)=>({id:`member-${i+1}`,name,role,bio,photo}));
