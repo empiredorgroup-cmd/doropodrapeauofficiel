@@ -23,17 +23,20 @@ export async function middleware(request: NextRequest) {
 
   const {data: {user}} = await supabase.auth.getUser();
 
-  const isLoginPage = request.nextUrl.pathname === '/admin/login';
-  const isAdminRoute = request.nextUrl.pathname.startsWith('/admin');
+  // trailingSlash:true (next.config.ts) fait que le vrai chemin est "/admin/login/", pas "/admin/login" :
+  // on normalise avant de comparer, sinon la page de connexion n'est jamais reconnue → boucle de redirection.
+  const pathname = request.nextUrl.pathname.replace(/\/$/, '') || '/';
+  const isLoginPage = pathname === '/admin/login';
+  const isAdminRoute = pathname.startsWith('/admin');
 
   if (isAdminRoute && !isLoginPage && !user) {
     const url = request.nextUrl.clone();
-    url.pathname = '/admin/login';
+    url.pathname = '/admin/login/';
     return NextResponse.redirect(url);
   }
   if (isLoginPage && user) {
     const url = request.nextUrl.clone();
-    url.pathname = '/admin';
+    url.pathname = '/admin/';
     return NextResponse.redirect(url);
   }
 
