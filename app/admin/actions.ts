@@ -1,9 +1,11 @@
 'use server';
-import {redirect} from 'next/navigation';
+import {revalidatePath} from 'next/cache';
 import {createClient} from '@/lib/supabase/server';
 
-export async function signOutAction() {
+export async function deleteVisitorAction(id: string) {
   const supabase = await createClient();
-  await supabase.auth.signOut();
-  redirect('/admin/login/');
+  const {error} = await supabase.from('visitors').delete().eq('id', id);
+  if (error) return {ok: false as const, message: error.message};
+  revalidatePath('/admin/visiteurs');
+  return {ok: true as const};
 }
