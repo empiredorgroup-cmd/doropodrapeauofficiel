@@ -1,2 +1,22 @@
+import {createClient} from '@/lib/supabase/server';
+import {VisitorsTable, type VisitorRow} from '@/components/admin/visitors-table';
+
 export const dynamic = 'force-dynamic';
-export default function Page(){return <div><div className="eyebrow">DOROPO DRAPEAU · ADMIN</div><h1 className="admin-title">Visiteurs</h1><p className="muted">Cet écran de gestion arrive dans une prochaine phase (Phase 1 couvre la base de données, la connexion admin et le tableau de bord).</p></div>}
+
+export default async function AdminVisitorsPage() {
+  const supabase = await createClient();
+  const {data} = await supabase
+    .from('visitors')
+    .select('id, first_name, last_name, phone, email, place, visit_date, visit_time, created_at')
+    .order('created_at', {ascending: false});
+
+  const visitors = (data ?? []) as VisitorRow[];
+
+  return (
+    <div>
+      <div className="eyebrow">DOROPO DRAPEAU · ADMIN</div>
+      <h1 className="admin-title">Visiteurs ({visitors.length})</h1>
+      <VisitorsTable visitors={visitors} />
+    </div>
+  );
+}
