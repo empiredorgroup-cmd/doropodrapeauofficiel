@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 import {Newspaper, Info, CalendarDays, MapPin, Facebook, FileText} from 'lucide-react';
 import {createClient} from '@/lib/supabase/server';
 import {ClickableMedia} from '@/components/lightbox';
+import {GalleryView} from '@/components/gallery-view';
 import type {NewsRow} from '@/components/admin/news-form';
 
 export const metadata: Metadata = {title: 'Le DD parleur', description: 'Actualités et publications de DOROPO DRAPEAU.'};
@@ -17,6 +18,20 @@ export default async function DdParleurPage() {
     .order('created_at', {ascending: false});
 
   const news = (data ?? []) as NewsRow[];
+
+  const mediaByNews = new Map<string, {id: string; src: string; type: 'image' | 'video'; alt: string}[]>();
+  if (news.length > 0) {
+    const {data: mediaRows} = await supabase
+      .from('news_media')
+      .select('id, news_id, media_url, media_type')
+      .in('news_id', news.map(n => n.id))
+      .order('display_order', {ascending: true});
+    for (const m of mediaRows ?? []) {
+      const list = mediaByNews.get(m.news_id) ?? [];
+      list.push({id: m.id, src: m.media_url, type: m.media_type as 'image' | 'video', alt: 'Photo supplémentaire'});
+      mediaByNews.set(m.news_id, list);
+    }
+  }
 
   return (
     <main>
@@ -37,35 +52,43 @@ export default async function DdParleurPage() {
             </div>
           ) : (
             <div className="news-feed">
-              {news.map(n => (
-                <article className="card news-post" key={n.id}>
-                  {n.image_url && (
-                    <div className="news-post-media">
-                      <ClickableMedia src={n.image_url} alt={n.title} width={800} height={520} />
-                    </div>
-                  )}
-                  {n.video_url && (
-                    <div className="news-post-media">
-                      <video src={n.video_url} controls preload="metadata" style={{width: '100%', display: 'block'}} />
-                    </div>
-                  )}
-                  <div className="news-post-body">
-                    <h2>{n.title}</h2>
-                    {(n.event_date || n.location) && (
-                      <div className="news-post-meta">
-                        {n.event_date && <span><CalendarDays size={14} /> {new Date(n.event_date).toLocaleDateString('fr-FR')}{n.event_time ? ` · ${n.event_time.slice(0, 5)}` : ''}</span>}
-                        {n.location && <span><MapPin size={14} /> {n.location}</span>}
+              {news.map(n => {
+                const gallery = mediaByNews.get(n.id) ?? [];
+                return (
+                  <article className="card news-post" key={n.id}>
+                    {n.image_url && (
+                      <div className="news-post-media">
+                        <ClickableMedia src={n.image_url} alt={n.title} width={800} height={520} />
                       </div>
                     )}
-                    {n.content && <p className="rich">{n.content}</p>}
-                    {n.caption && <p className="muted news-post-caption">{n.caption}</p>}
-                    <div className="news-post-links">
-                      {n.document_url && <a href={n.document_url} target="_blank" rel="noreferrer" className="text-link"><FileText size={15} /> Voir le document</a>}
-                      {n.facebook_link && <a href={n.facebook_link} target="_blank" rel="noreferrer" className="text-link"><Facebook size={15} /> Voir sur Facebook</a>}
+                    {n.video_url && (
+                      <div className="news-post-media">
+                        <video src={n.video_url} controls preload="metadata" style={{width: '100%', display: 'block'}} />
+                      </div>
+                    )}
+                    <div className="news-post-body">
+                      <h2>{n.title}</h2>
+                      {(n.event_date || n.location) && (
+                        <div className="news-post-meta">
+                          {n.event_date && <span><CalendarDays size={14} /> {new Date(n.event_date).toLocaleDateString('fr-FR')}{n.event_time ? ` · ${n.event_time.slice(0, 5)}` : ''}</span>}
+                          {n.location && <span><MapPin size={14} /> {n.location}</span>}
+                        </div>
+                      )}
+                      {n.content && <p className="rich">{n.content}</p>}
+                      {n.caption && <p className="muted news-post-caption">{n.caption}</p>}
+                      {gallery.length > 0 && (
+                        <div style={{marginTop: 22}}>
+                          <GalleryView media={gallery} />
+                        </div>
+                      )}
+                      <div className="news-post-links">
+                        {n.document_url && <a href={n.document_url} target="_blank" rel="noreferrer" className="text-link"><FileText size={15} /> Voir le document</a>}
+                        {n.facebook_link && <a href={n.facebook_link} target="_blank" rel="noreferrer" className="text-link"><Facebook size={15} /> Voir sur Facebook</a>}
+                      </div>
                     </div>
-                  </div>
-                </article>
-              ))}
+                  </article>
+                );
+              })}
             </div>
           )}
         </div>
