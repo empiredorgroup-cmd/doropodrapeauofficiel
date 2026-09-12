@@ -79,10 +79,11 @@ export function ActivityForm({activity, action}: {activity?: ActivityRow; action
       </label>
       {activity && <input type="hidden" name="current_cover_url" value={activity.cover_image_url ?? ''} />}
 
-      <p className="muted" style={{fontSize: '.78rem'}}>
-        La galerie complète de photos par activité n’est pas encore gérable depuis cet écran — les
-        photos déjà en ligne restent affichées automatiquement en attendant cette prochaine étape.
-      </p>
+      {!activity && (
+        <p className="muted" style={{fontSize: '.78rem'}}>
+          Tu pourras ajouter plusieurs photos/vidéos à la galerie de cette activité juste après l’avoir créée.
+        </p>
+      )}
 
       <button type="submit" className="btn gold">{activity ? 'Enregistrer les modifications' : 'Créer l’activité'}</button>
     </form>

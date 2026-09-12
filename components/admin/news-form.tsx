@@ -88,6 +88,12 @@ export function NewsForm({news, action}: {news?: NewsRow; action: (formData: For
         </select>
       </label>
 
+      {!news && (
+        <p className="muted" style={{fontSize: '.78rem'}}>
+          Tu pourras ajouter plusieurs photos/vidéos à la galerie de cette actualité juste après l’avoir créée.
+        </p>
+      )}
+
       <button type="submit" className="btn gold">{news ? 'Enregistrer les modifications' : 'Créer l’actualité'}</button>
     </form>
   );
